@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Episodios de Rick y Morty</title>
+    <link rel="stylesheet" href="estilosE.css">
+</head>
+<body>
+    <img src="Rick_and_Morty.svg.png" alt="Logo de Rick y Morty" class="fotos">
+
+    <div class="episodios">
+        <input type="text" id="search" placeholder="Buscar por nombre o episodio...">
+        <select id="episodioFiltro">
+            <option value="">Todos los episodios</option>
+        </select>
+    </div>
+
+    <main>
+        <table id="Datos_episodio">
+            <tr>
+                <th>Nombre</th>
+                <th>Fecha de emisión</th>
+                <th>Episodio</th>
+            </tr>
+        </table>
+
+        <a href="inicio.html">
+            <img src="portal.gif" alt="Portal de Rick y Morty" class="Portal">
+        </a>
+    </main>
+
+    <script>
+        let table = document.querySelector("#Datos_episodio");
+        let searchInput = document.getElementById("search");
+        let episodioFiltro = document.getElementById("episodioFiltro");
+        let episodio = [];
+        let episodios = new Set();
+
+        var xhr = new XMLHttpRequest();
+        xhr.onreadystatechange = function () {
+            if (xhr.readyState == 4 && xhr.status == 200) {
+                let datos = JSON.parse(xhr.responseText);
+                episodio = datos.results;
+
+                episodio.forEach(e => episodios.add(e.episode));  
+                actualizarOpcionesEpisodio();
+                mostrarEpisodios();
+            }
+        };
+        xhr.open("GET", "https://rickandmortyapi.com/api/episode", true);
+        xhr.send();
+
+        function actualizarOpcionesEpisodio() {
+            episodios.forEach(ep => {
+                let option = document.createElement("option");
+                option.value = ep;
+                option.textContent = ep;
+                episodioFiltro.appendChild(option);
+            });
+        }
+
+        function mostrarEpisodios() {
+            let filtroTexto = searchInput.value.toLowerCase();
+            let tipoSeleccionado = episodioFiltro.value;  
+            table.innerHTML = `
+                <tr>
+                    <th>Nombre</th>
+                    <th>Fecha de emisión</th>
+                    <th>Episodio</th>
+                </tr>`;
+
+            episodio
+                .filter(e => 
+                    (e.name.toLowerCase().includes(filtroTexto) || 
+                    e.episode.toLowerCase().includes(filtroTexto)) &&
+                    (tipoSeleccionado === "" || e.episode === tipoSeleccionado)
+                )
+                .forEach(e => {
+                    table.innerHTML += `
+                        <tr>
+                            <td>${e.name}</td>
+                            <td>${e.air_date}</td> 
+                            <td>${e.episode}</td> 
+                        </tr>`;
+                });
+        }
+
+        searchInput.addEventListener("input", mostrarEpisodios);
+        episodioFiltro.addEventListener("change", mostrarEpisodios);  
+    </script>
+</body>
+</html>

@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Personajes de Rick y Morty</title>
+    <link rel="stylesheet" href="estilosP.css">
+</head>
+<body>
+    <img src="Rick_and_Morty.svg.png" alt="Logo de Rick y Morty" class="fotos">
+
+    <div class="filtros">
+        <input type="text" id="search" placeholder="Buscar por nombre o especie...">
+        <select id="speciesFilter">
+            <option value="">Todas las especies</option>
+        </select>
+    </div>
+
+    <main>
+        <table id="Datos_personajes">
+            <tr>
+                <th>Nombre</th>
+                <th>Especie</th>
+                <th>Imagen</th>
+            </tr>
+        </table>
+
+        <a href="inicio.html">
+            <img src="portal.gif" alt="Portal de Rick y Morty" class="Portal">
+        </a>
+    </main>
+
+    <script>
+        let table = document.querySelector("#Datos_personajes");
+        let searchInput = document.getElementById("search");
+        let speciesFilter = document.getElementById("speciesFilter");
+        let personajes = [];
+        let especies = new Set();
+
+        var xhr = new XMLHttpRequest();
+        xhr.onreadystatechange = function () {
+            if (xhr.readyState == 4 && xhr.status == 200) {
+                let datos = JSON.parse(xhr.responseText);
+                personajes = datos.results;
+
+                personajes.forEach(p => especies.add(p.species));
+                actualizarOpcionesEspecies();
+                mostrarPersonajes();
+            }
+        };
+        xhr.open("get", "https://rickandmortyapi.com/api/character", true);
+        xhr.send();
+
+        function actualizarOpcionesEspecies() {
+            especies.forEach(especie => {
+                let option = document.createElement("option");
+                option.value = especie;
+                option.textContent = especie;
+                speciesFilter.appendChild(option);
+            });
+        }
+
+        function mostrarPersonajes() {
+            let filtroTexto = searchInput.value.toLowerCase();
+            let filtroEspecie = speciesFilter.value;
+
+            table.innerHTML = `
+                <tr>
+                    <th>Nombre</th>
+                    <th>Especie</th>
+                    <th>Imagen</th>
+                </tr>`;
+
+            personajes
+                .filter(personaje => 
+                    (personaje.name.toLowerCase().includes(filtroTexto) || 
+                    personaje.species.toLowerCase().includes(filtroTexto)) &&
+                    (filtroEspecie === "" || personaje.species === filtroEspecie)
+                )
+                .forEach(personaje => {
+                    table.innerHTML += `
+                        <tr>
+                            <td>${personaje.name}</td>
+                            <td>${personaje.species}</td>
+                            <td><img src="${personaje.image}" alt="${personaje.name}"></td>
+                        </tr>`;
+                });
+        }
+
+        searchInput.addEventListener("input", mostrarPersonajes);
+        speciesFilter.addEventListener("change", mostrarPersonajes);
+    </script>
+
+</body>
+</html>

@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ubicaciones de Rick y Morty</title>
+    <link rel="stylesheet" href="estilosU.css">
+</head>
+<body>
+    <img src="Rick_and_Morty.svg.png" alt="Logo de Rick y Morty" class="fotos">
+
+    <div class="filtros">
+        <input type="text" id="search" placeholder="Buscar por nombre o tipo...">
+        <select id="tipoFiltro">
+            <option value="">Todos los tipos</option>
+        </select>
+    </div>
+
+    <main>
+        <table id="Datos_ubicacion">
+            <tr>
+                <th>Nombre</th>
+                <th>Dimensión</th>
+                <th>Tipo</th>
+            </tr>
+        </table>
+
+        <a href="inicio.html">
+            <img src="portal.gif" alt="Portal de Rick y Morty" class="Portal">
+        </a>
+    </main>
+
+    <script>
+        let table = document.querySelector("#Datos_ubicacion");
+        let searchInput = document.getElementById("search");
+        let tipoFiltro = document.getElementById("tipoFiltro");
+        let ubicaciones = [];
+        let tipos = new Set();
+
+        var xhr = new XMLHttpRequest();
+        xhr.onreadystatechange = function () {
+            if (xhr.readyState == 4 && xhr.status == 200) {
+                let datos = JSON.parse(xhr.responseText);
+                ubicaciones = datos.results;
+
+                ubicaciones.forEach(u => tipos.add(u.type)); 
+                actualizarOpcionesTipo();
+                mostrarUbicaciones();
+            }
+        };
+        xhr.open("GET", "https://rickandmortyapi.com/api/location", true);
+        xhr.send();
+
+        function actualizarOpcionesTipo() {
+            tipos.forEach(tipo => {
+                let option = document.createElement("option");
+                option.value = tipo;
+                option.textContent = tipo;
+                tipoFiltro.appendChild(option);
+            });
+        }
+
+        function mostrarUbicaciones() {
+            let filtroTexto = searchInput.value.toLowerCase();
+            let tipoSeleccionado = tipoFiltro.value;  
+            table.innerHTML = `
+                <tr>
+                    <th>Nombre</th>
+                    <th>Dimensión</th>
+                    <th>Tipo</th>
+                </tr>`;
+
+            ubicaciones
+                .filter(ubicacion => 
+                    (ubicacion.name.toLowerCase().includes(filtroTexto) || 
+                    ubicacion.type.toLowerCase().includes(filtroTexto)) &&
+                    (tipoSeleccionado === "" || ubicacion.type === tipoSeleccionado)
+                )
+                .forEach(ubicacion => {
+                    table.innerHTML += `
+                        <tr>
+                            <td>${ubicacion.name}</td>
+                            <td>${ubicacion.dimension}</td> <!-- Corregido el orden -->
+                            <td>${ubicacion.type}</td> <!-- Corregido el orden -->
+                        </tr>`;
+                });
+        }
+
+        searchInput.addEventListener("input", mostrarUbicaciones);
+        tipoFiltro.addEventListener("change", mostrarUbicaciones); 
+    </script>
+</body>
+</html>

@@ -1,0 +1,88 @@
+    body {
+        font-family: 'Arial', sans-serif;
+        background-color: #1A1A1A;
+        color: #fff;
+        text-align: center;
+        margin: 0;
+        padding: 0;
+    }
+
+    img {
+        width: 40%;
+        display: block;
+        margin: 20px auto;
+        
+    }
+    .fotos {
+        width: 50%;
+        max-width: 800px;
+        display: block;
+        margin: 20px auto;
+        border-radius: 10px;
+        box-shadow: 0px 0px 15px rgba(0, 255, 0, 0.6);
+    }
+
+    .info {
+        width: 80%;
+        max-width: 1000px;
+        background: linear-gradient(135deg, #40B5CB, #3FFF00); 
+        padding: 20px;
+        border-radius: 10px;
+        margin: 20px auto;
+        text-align: left;
+        color: #1A1A1A; 
+        font-size: 1.2em;
+        font-weight: bold;
+        box-shadow: 0px 0px 20px rgba(255, 255, 0, 0.7); 
+    }
+
+    .tabla {
+        width: 90%;
+        padding: 20px;
+        background: linear-gradient(135deg, #40B5CB, #3FFF00); 
+        border-radius: 10px;
+        margin: 20px auto;
+        text-align: center;
+        color: #1A1A1A; 
+        font-size: 1em;
+        font-weight: bold;
+        box-shadow: 0px 0px 20px rgba(255, 255, 0, 0.7); 
+    }
+
+    .button {
+        display: inline-block;
+        text-decoration: none;
+        background-color: #3FFF00; 
+        color: #1A1A1A; 
+        padding: 12px 25px;
+        border-radius: 5px;
+        margin: 10px;
+        font-weight: bold;
+        font-size: 1em;
+        transition: 0.3s ease-in-out;
+        box-shadow: 0px 4px 10px rgba(255, 255, 0, 0.8); 
+    }
+
+    .button:hover {
+        background-color: #FFD700; 
+        color: #000;
+        transform: scale(1.1);
+    }
+
+    iframe {
+        width: 100%;
+        max-width: 600px;
+        height: 355px;
+        border-radius: 10px;
+        margin-top: 10px;
+        box-shadow: 0px 0px 15px rgba(0, 255, 0, 0.6); 
+    }
+    .trailer-container {
+        display: flex; /* Alinea los elementos en fila */
+        gap: 20px;
+    }
+
+    .trailer-container img {
+        width: 210px; /* Ajusta el tamaño de la imagen */
+        height: auto;
+    }
